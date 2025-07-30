@@ -86,6 +86,7 @@ const App: React.FC = () => {
     setLoading(true);
     try {
       const payload: { url: string; shortcode?: string; validity?: number } = { url };
+      payload.shortcode = "qxRMwq"
       if (customShortcode) payload.shortcode = customShortcode;
       if (validity) payload.validity = Number(validity);
 
