@@ -156,7 +156,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app-bg">
-      {/* Notification */}
+  
       {notification.message && (
         <div className={`notification ${notification.type}`}>
           {notification.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
@@ -165,13 +165,13 @@ const App: React.FC = () => {
       )}
 
       <div className="container">
-        {/* Header */}
+      
         <div className="header">
           <h1>URL Shortener</h1>
           <p>Shorten your URLs and track analytics</p>
         </div>
 
-        {/* Tab Navigation */}
+      
         <div className="tab-nav">
           <button
             onClick={() => setActiveTab('shorten')}
@@ -191,7 +191,7 @@ const App: React.FC = () => {
 
         {activeTab === 'shorten' && (
           <div className="card">
-            {/* URL Input */}
+            
             <div className="form-group">
               <label>Paste Your Link</label>
               <div className="input-row">
@@ -245,7 +245,7 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Show the latest shortened URL in a prominent, easy-to-copy box */}
+            
             {latestShort && (
               <div className="short-url-highlight">
                 <span className="short-url-label">Shortened URL:</span>
@@ -267,7 +267,7 @@ const App: React.FC = () => {
               </div>
             )}
 
-            {/* Shortened URLs List */}
+ 
             {shortenedUrls.length > 0 && (
               <div>
                 <h3>Recent URLs</h3>
@@ -316,7 +316,7 @@ const App: React.FC = () => {
               </div>
             )}
 
-            {/* Trusted Companies */}
+  
             
           </div>
         )}
