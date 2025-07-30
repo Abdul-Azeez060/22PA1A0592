@@ -2,18 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const validUrl = require('valid-url');
 const { Log, loggingMiddleware } = require('./middleware');
-const cors = require('cors'); // <-- Add this line
+const cors = require('cors'); 
 const app = express();
 const PORT = 4000;
 const HOSTNAME = `http://localhost:${PORT}`;
 
-// Enable CORS for all origins (development only)
-app.use(cors()); // <-- Add this line
+
+app.use(cors()); 
 
 app.use(bodyParser.json());
 app.use(loggingMiddleware);
 
-// In-memory storage
 const urls = {};
 const clicks = {};
 
@@ -36,7 +35,6 @@ function getExpiryDate(minutes) {
     return d;
 }
 
-// 1. Shorten URL
 app.post('/shorturls', async (req, res) => {
     const { url, validity, shortcode } = req.body;
     if (!url || !validUrl.isUri(url)) {
@@ -74,14 +72,13 @@ app.post('/shorturls', async (req, res) => {
         clicks: 0
     };
     clicks[shortCode] = [];
-    await Log('backend', 'info', 'handler', `shortcode created: ${shortCode}`); // Fixed template literal
+    await Log('backend', 'info', 'handler', `shortcode created: ${shortCode}`); 
     res.status(201).json({
-        shortLink: `${HOSTNAME}/shorturls/${shortCode}`, // Fixed template literal
+        shortLink: `${HOSTNAME}/shorturls/${shortCode}`, 
         expiry: expiryDate.toISOString()
     });
 });
 
-// 2. Redirection
 app.get('/shorturls/:shortcode', async (req, res) => {
     const { shortcode } = req.params;
     const entry = urls[shortcode];
@@ -90,7 +87,7 @@ app.get('/shorturls/:shortcode', async (req, res) => {
         return res.status(404).json({ error: 'Shortcode not found' });
     }
     if (entry.expiry < new Date()) {
-        await Log('backend', 'fatal', 'handler', `expired shortcode: ${shortcode}`); // Fixed template literal
+        await Log('backend', 'fatal', 'handler', `expired shortcode: ${shortcode}`); 
         return res.status(410).json({ error: 'Short URL has expired' });
     }
     entry.clicks++;
@@ -99,11 +96,10 @@ app.get('/shorturls/:shortcode', async (req, res) => {
         referrer: req.get('referrer') || null,
         ip: req.ip
     });
-    await Log('backend', 'info', 'handler', `redirect for shortcode: ${shortcode}`); // Fixed template literal
+    await Log('backend', 'info', 'handler', `redirect for shortcode: ${shortcode}`); 
     res.redirect(entry.url);
 });
 
-// 3. Analytics
 app.get('/shorturls/:shortcode/stats', async (req, res) => {
     const { shortcode } = req.params;
     const entry = urls[shortcode];
@@ -112,7 +108,7 @@ app.get('/shorturls/:shortcode/stats', async (req, res) => {
         return res.status(404).json({ error: 'Shortcode not found' });
     }
     const allClicks = clicks[shortcode] || [];
-    await Log('backend', 'info', 'handler', `serving analytics for ${shortcode}`); // Fixed template literal
+    await Log('backend', 'info', 'handler', `serving analytics for ${shortcode}`); 
     res.json({
         shortcode,
         originalUrl: entry.url,
@@ -127,13 +123,13 @@ app.get('/shorturls/:shortcode/stats', async (req, res) => {
     });
 });
 
-// Global error handling
+
 app.use(async (err, req, res, next) => {
     await Log('backend', 'fatal', 'handler', 'unexpected server error');
     res.status(500).json({ error: 'Internal Server Error' });
 });
 
 app.listen(PORT, () => {
-    console.log(`URL Shortener running at ${HOSTNAME}`); // Fixed template literal
-    Log('backend', 'info', 'service', `url shortener running at ${HOSTNAME}`); // Fixed template literal
+    console.log(`URL Shortener running at ${HOSTNAME}`); 
+    Log('backend', 'info', 'service', `url shortener running at ${HOSTNAME}`);
 });
